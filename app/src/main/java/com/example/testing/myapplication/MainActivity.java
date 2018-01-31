@@ -8,12 +8,16 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageView;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+
+import io.github.memfis19.annca.Annca;
+import io.github.memfis19.annca.internal.configuration.AnncaConfiguration;
 
 public class MainActivity extends AppCompatActivity {
     private static final int TAKE_PHOTO_CODE = 1;
@@ -27,6 +31,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void takePicture(View view){
+       // Intent intent = new Intent(this, CameraActivity.class);
+       //startActivity(intent);
+        // the surface where the preview will be displayed
+
+        AnncaConfiguration.Builder videoLimited = new AnncaConfiguration.Builder(this, TAKE_PHOTO_CODE);
+        videoLimited.setMediaAction(AnncaConfiguration.MEDIA_ACTION_PHOTO);
+
+      //  AnncaConfiguration.Builder builder = new AnncaConfiguration.Builder(this, TAKE_PHOTO_CODE);
+        new Annca(videoLimited.build()).launchCamera();
+
+
+
+    }
+
+    public void takePicture2(View view){
         final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/test/";
         File newdir = new File(dir);
         newdir.mkdirs();
@@ -52,8 +71,7 @@ public class MainActivity extends AppCompatActivity {
         Bitmap bitmap = null;
 
         if (resultCode == RESULT_OK && requestCode == TAKE_PHOTO_CODE) {
-            String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/test/";
-            String filePath = dir + "selectedimage.jpg";
+            String filePath = data.getStringExtra(AnncaConfiguration.Arguments.FILE_PATH);
             bitmap = BitmapFactory.decodeFile(filePath);
 
         }
